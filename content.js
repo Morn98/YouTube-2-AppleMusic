@@ -34,8 +34,11 @@ function getYouTubeTitle() {
 function cleanTitle(title) {
   if (!title) return '';
 
+  // Step 0: Check if "remix" appears anywhere in the title
+  const hasRemix = /remix/i.test(title);
+
   // Step 1: Remove all content within brackets (round, square, curly)
-  // This removes [Official Video], (Audio), {whatever}, etc.
+  // This removes [Official Video], (Audio), (ostekke remix), etc.
   title = title.replace(/\([^)]*\)/g, '');  // Remove (...)
   title = title.replace(/\[[^\]]*\]/g, '');  // Remove [...]
   title = title.replace(/\{[^}]*\}/g, '');   // Remove {...}
@@ -107,12 +110,26 @@ function cleanTitle(title) {
   // Step 9: Convert to lowercase for search-friendly format
   title = title.toLowerCase();
 
+  // Step 10: If original title had "remix", append it at the end
+  if (hasRemix) {
+    // Remove any existing "remix" from the title (in case it wasn't in brackets)
+    title = title.replace(/\bremix\b/gi, '').trim();
+    // Append "remix" at the end
+    title = title.trim() + ' remix';
+  }
+
   // Final trim
   return title.trim();
 }
 
 // Listen for messages from the popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  // Security: Validate sender is from our extension
+  if (!sender.id || sender.id !== chrome.runtime.id) {
+    console.error('Rejected message from unauthorized sender');
+    return false;
+  }
+
   if (request.action === 'getTitle') {
     const rawTitle = getYouTubeTitle();
     const cleanedTitle = cleanTitle(rawTitle);
@@ -125,6 +142,3 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
   return true; // Keep the message channel open for async response
 });
-
-// Optional: Log when content script loads (for debugging)
-console.log('YouTube-2-AppleMusic content script loaded');

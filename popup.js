@@ -56,14 +56,15 @@ async function openInAppleMusic() {
   }
 
   try {
-    // Get the current tab ID to return to it after opening Apple Music
+    // Get the current YouTube tab
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
     // Send message to background script to open Apple Music
+    // Background script will validate this is a YouTube tab for security
     await chrome.runtime.sendMessage({
       action: 'openAppleMusic',
       searchTerm: currentTitle,
-      originalTabId: tab.id
+      tabId: tab.id
     });
 
     // Close the popup after a short delay
