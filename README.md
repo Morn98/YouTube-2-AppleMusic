@@ -21,20 +21,10 @@ A Chrome extension for macOS that allows you to open YouTube videos directly in 
 ### From Source
 
 1. Clone or download this repository
-2. Add extension icons (see [Adding Icons](#adding-icons) below)
-3. Open Chrome and navigate to `chrome://extensions/`
-4. Enable "Developer mode" (toggle in top-right corner)
-5. Click "Load unpacked"
-6. Select the `YouTube-2-AppleMusic` directory
-
-### Adding Icons
-
-The extension requires icons in the `icons/` directory:
-- `icon16.png` (16x16 pixels)
-- `icon48.png` (48x48 pixels)
-- `icon128.png` (128x128 pixels)
-
-You can create simple icons or use placeholder images. For quick setup, you can create basic red square icons or download music-themed icons from free icon sources.
+2. Open Chrome and navigate to `chrome://extensions/`
+3. Enable "Developer mode" (toggle in top-right corner)
+4. Click "Load unpacked"
+5. Select the `YouTube-2-AppleMusic` directory
 
 ## Usage
 
@@ -172,15 +162,6 @@ YouTube-2-AppleMusic/
 - Make sure you're on a YouTube page
 - Check that the page has finished loading
 - Look for errors in the popup DevTools console
-
-## Future Enhancements
-
-Possible improvements:
-- Add keyboard shortcut
-- Support for YouTube playlists
-- Option to open in Spotify or other music services
-- Better title parsing for artist/song separation
-- Settings page for customization
 
 ## License
 
