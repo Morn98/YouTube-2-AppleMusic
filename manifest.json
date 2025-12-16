@@ -5,7 +5,8 @@
   "description": "Open YouTube videos directly in Apple Music on macOS",
   "permissions": [
     "activeTab",
-    "scripting"
+    "scripting",
+    "notifications"
   ],
   "host_permissions": [
     "*://*.youtube.com/*"

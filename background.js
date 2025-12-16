@@ -1,6 +1,6 @@
 // background.js - Service worker to handle opening Apple Music
 
-function openAppleMusic(searchTerm) {
+function openAppleMusic(searchTerm, tabId) {
   if (!searchTerm) {
     console.error('No search term provided');
     return;
@@ -12,28 +12,27 @@ function openAppleMusic(searchTerm) {
   // Create the Apple Music URL scheme
   const appleMusicUrl = `music://music.apple.com/search?term=${encodedTerm}`;
 
-  // Open the URL in a new tab
-  // Chrome will handle the custom protocol and launch Apple Music on macOS
-  chrome.tabs.create({ url: appleMusicUrl }, (tab) => {
-    // The tab will immediately close as the OS handles the custom protocol
-    // We can close it after a short delay to clean up
-    if (tab && tab.id) {
-      setTimeout(() => {
-        chrome.tabs.remove(tab.id).catch(() => {
-          // Ignore errors if tab is already closed
-        });
-      }, 5000);
-    }
-  });
+  // Navigate the current tab to the Apple Music URL
+  // This will trigger macOS to open Apple Music
+  // The browser will stay on the YouTube page as the OS handles the protocol
+  chrome.tabs.update(tabId, { url: appleMusicUrl });
 }
 
-// Listen for messages from the popup
+// Handle messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'openAppleMusic') {
-    openAppleMusic(request.searchTerm);
-    sendResponse({ success: true });
+    const { searchTerm, originalTabId } = request;
+
+    if (searchTerm && originalTabId) {
+      openAppleMusic(searchTerm, originalTabId);
+      sendResponse({ success: true });
+    } else {
+      console.error('Missing searchTerm or originalTabId');
+      sendResponse({ success: false, error: 'Missing required parameters' });
+    }
+
+    return true; // Keep message channel open for async response
   }
-  return true;
 });
 
 // Optional: Log when service worker starts

@@ -56,10 +56,14 @@ async function openInAppleMusic() {
   }
 
   try {
+    // Get the current tab ID to return to it after opening Apple Music
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
     // Send message to background script to open Apple Music
     await chrome.runtime.sendMessage({
       action: 'openAppleMusic',
-      searchTerm: currentTitle
+      searchTerm: currentTitle,
+      originalTabId: tab.id
     });
 
     // Close the popup after a short delay
